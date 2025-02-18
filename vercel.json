@@ -1,12 +1,15 @@
 {
-  "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "module": "commonjs",
-    "target": "es6",
-    "esModuleInterop": true,
-    "strict": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/index.js"
+    }
+  ]
 }
