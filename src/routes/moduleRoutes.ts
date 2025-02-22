@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get("/modules", getAllModules);
 router.get("/module/:id", getModuleById);
-router.post("/modules", addModule);
+router.post("/module", addModule);
 router.put("/modules/:id", updateModule);
 router.delete("/modules/:id", deleteModule);
 

@@ -2,8 +2,11 @@ import express, { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+import dotenv from "dotenv";
 
-const JWT_SECRET = process.env.JWT_SECRET;
+dotenv.config();
+
+const scretKey = process.env.JWT_SECRET;
 
 export const register = async (req: Request, res: Response) => {
   const { username, email, password, role } = req.body;
@@ -24,7 +27,7 @@ export const login: express.RequestHandler = async (
   next: NextFunction
 ): Promise<void> => {
   const { email, password } = req.body;
-
+  console.log("res", req.body);
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -37,15 +40,16 @@ export const login: express.RequestHandler = async (
       res.status(400).json({ error: "Invalid credentials" });
       return;
     }
-
+    console.log("match", scretKey);
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      JWT_SECRET as string,
+      scretKey as string,
       {
         expiresIn: "30d",
       }
     );
-    res.json({ token });
+
+    res.status(201).json({ token, user });
   } catch (error) {
     res.status(500).json({ error: "Error logging in" });
   }

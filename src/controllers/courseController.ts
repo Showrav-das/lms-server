@@ -10,15 +10,18 @@ export const createCourse = async (
 ): Promise<void> => {
   try {
     const { title, price, description } = req.body;
-    // if (!req.file) {
-    //   res.status(400).json({ error: "Image is required" });
-    //   return;
-    // }
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : "";
+    console.log("imageurl", imageUrl);
+    console.log("file", req.file);
+    if (!req.file) {
+      res.status(400).json({ error: "Image is required" });
+      return;
+    }
 
     const newCourse = new Course({
-      // image: req.file.path,
+      image: req.file.path,
       title,
-      price: Number(price),
+      price,
       description,
     });
 
@@ -39,18 +42,18 @@ export const updateCourse = async (
   try {
     const { id } = req.params;
     const { title, price, description } = req.body;
-
+    console.log("id", req.body);
     const updatedCourse = await Course.findByIdAndUpdate(
       id,
       {
         title,
-        price: Number(price),
+        price: price,
         description,
         image: req.file ? req.file.path : undefined,
       },
       { new: true, runValidators: true }
     );
-
+    console.log("first", updatedCourse);
     if (!updatedCourse) {
       res.status(404).json({ error: "Course not found" });
       return;
@@ -71,6 +74,7 @@ export const deleteCourse = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+    console.log("id", id);
     const course = await Course.findById(id);
     if (!course) {
       res.status(404).json({ error: "Course not found" });
@@ -116,14 +120,16 @@ export const getCourseById = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const course = await Course.findById(id).populate({
-      path: "modules",
-      populate: {
-        path: "lectures",
-        model: "Lecture",
-      },
-    });
-
+    const course = await Course.findById(id)
+      .populate("modules") // Populate modules first
+      .populate({
+        path: "modules",
+        populate: {
+          path: "lectures",
+          model: "Lecture",
+        },
+      });
+    console.log("first", course);
     if (!course) {
       res.status(404).json({ error: "Course not found" });
       return;

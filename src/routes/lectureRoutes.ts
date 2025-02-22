@@ -5,12 +5,13 @@ import {
   getLecturesByModule,
   updateLecture,
 } from "../controllers/lectureController";
+import upload from "../utils/upload";
 
 const router = express.Router();
 
-router.post("/lecture", createLecture);
+// router.post("/lecture", createLecture);
 
-// router.post('/', upload.array('pdfNotes'), createLecture);
+router.post("/lecture", upload.array("notes", 10), createLecture);
 
 // Get all lectures for a module
 router.get("/lectures/:moduleId", getLecturesByModule);

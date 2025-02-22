@@ -1,15 +1,27 @@
 import { Request, Response } from "express";
 import Lecture from "../models/Lecture";
+
 // import { upload } from '../utils/upload';
 
 // Create a new lecture
 export const createLecture = async (req: Request, res: Response) => {
   try {
     const { title, videoUrl, moduleId } = req.body;
-    // const pdfNotes = req.files?.pdfNotes?.map((file: any) => file.path);
+    const files = req.files as Express.Multer.File[];
+    console.log("files", files);
+    console.log("all data", title, videoUrl, moduleId);
+    // Create array of file paths if files exist
+    const notesUrls = files ? files.map((file) => file.path) : [];
 
-    const newLecture = new Lecture({ title, videoUrl, moduleId });
+    const newLecture = new Lecture({
+      title,
+      videoUrl,
+      moduleId,
+      notes: notesUrls,
+    });
+
     await newLecture.save();
+    console.log("Saved lecture:", newLecture);
 
     res.status(201).json(newLecture);
   } catch (error) {

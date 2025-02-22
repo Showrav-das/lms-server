@@ -3,13 +3,13 @@ import mongoose, { Schema } from "mongoose";
 export interface ILecture extends Document {
   title: string;
   videoUrl: string;
-  pdfNotes: string[];
+  notes: string[];
   moduleId: mongoose.Schema.Types.ObjectId;
 }
 const LectureSchema: Schema = new Schema({
-  title: { type: String, required: true, unique: true },
+  title: { type: String, required: true },
   videoUrl: { type: String, required: true },
-  pdfNotes: { type: [String], default: [] },
+  notes: { type: [String], default: [] },
   moduleId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Module",

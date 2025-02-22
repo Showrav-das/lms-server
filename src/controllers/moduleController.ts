@@ -39,15 +39,16 @@ export const getModuleById = async (
 // crete module
 export const addModule = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, courseId } = req.body;
+    const { title, selectedValue } = req.body;
+    console.log("module", req.body);
 
-    const course = await Course.findById(courseId);
+    const course = await Course.findById(selectedValue);
     if (!course) {
       res.status(404).json({ message: "Course not found" });
       return;
     }
 
-    const newModule = await Module.create({ title, course: courseId });
+    const newModule = await Module.create({ title, course: selectedValue });
 
     course.modules.push(newModule._id);
     await course.save();
